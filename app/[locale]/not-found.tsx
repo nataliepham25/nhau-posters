@@ -8,7 +8,7 @@ import { DEFAULT_LOCALE, isLocale, localePath } from "@/lib/i18n";
 // valid locale. Unknown locales are handled by app/global-not-found.tsx.
 export default async function NotFound() {
   const value = await localeParam();
-  const locale = isLocale(value) ? value : DEFAULT_LOCALE;
+  const locale = value && isLocale(value) ? value : DEFAULT_LOCALE;
   const dict = getDictionary(locale);
 
   return (

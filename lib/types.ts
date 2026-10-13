@@ -14,6 +14,7 @@ export type IngredientCategory =
   | "fruit"
   | "herb and aromatic"
   | "spice"
+  | "bitter"
   | "floral"
   | "technique";
 

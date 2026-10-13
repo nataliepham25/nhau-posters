@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Poster } from "@/components/Poster";
 import { SiteHeader } from "@/components/SiteHeader";
 import { getCocktails } from "@/lib/contentful";
 import { getDictionary } from "@/lib/dictionaries";
-import { isLocale, localePath } from "@/lib/i18n";
+import { DEFAULT_LOCALE, isLocale, localePath } from "@/lib/i18n";
+import { generatePoster } from "@/lib/poster/generate";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]">): Promise<Metadata> {
   const { locale } = await params;
@@ -19,7 +21,12 @@ export default async function CocktailIndexPage({ params }: PageProps<"/[locale]
   if (!isLocale(locale)) notFound();
 
   const dict = getDictionary(locale);
-  const cocktails = await getCocktails(locale);
+  // Posters are always generated from English data, so they match across languages.
+  const [cocktails, englishCocktails] = await Promise.all([
+    getCocktails(locale),
+    locale === DEFAULT_LOCALE ? null : getCocktails(DEFAULT_LOCALE),
+  ]);
+  const posterSource = new Map((englishCocktails ?? cocktails).map((c) => [c.slug, c]));
 
   return (
     <>
@@ -33,7 +40,11 @@ export default async function CocktailIndexPage({ params }: PageProps<"/[locale]
                 href={localePath(locale, `/cocktails/${cocktail.slug}`)}
                 className="block rounded border border-zinc-200 p-4 hover:border-zinc-400 dark:border-zinc-800 dark:hover:border-zinc-600"
               >
-                <div aria-hidden="true" className="mb-4 aspect-[3/4] w-full bg-zinc-200 dark:bg-zinc-800" />
+                {/* Decorative here: the link text already names the cocktail. */}
+                <Poster
+                  spec={generatePoster(posterSource.get(cocktail.slug) ?? cocktail)}
+                  className="mb-4 block h-auto w-full"
+                />
                 <h2 lang="vi" className="text-xl font-semibold">
                   {cocktail.name}
                 </h2>

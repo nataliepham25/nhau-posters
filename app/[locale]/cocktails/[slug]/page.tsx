@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Poster } from "@/components/Poster";
 import { SiteHeader } from "@/components/SiteHeader";
 import { getCocktailBySlug, getCocktails } from "@/lib/contentful";
 import { getDictionary } from "@/lib/dictionaries";
-import { isLocale, localePath } from "@/lib/i18n";
+import { DEFAULT_LOCALE, isLocale, localePath } from "@/lib/i18n";
+import { describePoster } from "@/lib/poster/describe";
+import { generatePoster } from "@/lib/poster/generate";
 
 type Props = PageProps<"/[locale]/cocktails/[slug]">;
 
@@ -30,6 +33,16 @@ export default async function CocktailPage({ params }: Props) {
   if (!cocktail) notFound();
 
   const dict = getDictionary(locale);
+
+  // Posters are always generated from English data, so they match across languages.
+  const posterSource =
+    locale === DEFAULT_LOCALE ? cocktail : ((await getCocktailBySlug(slug, DEFAULT_LOCALE)) ?? cocktail);
+  const poster = generatePoster(posterSource);
+  const posterAlt = describePoster(
+    poster,
+    dict.poster,
+    new Map(cocktail.ingredients.map((ingredient) => [ingredient.id, ingredient.name])),
+  );
   const paragraphs = cocktail.story.split(/\n\s*\n/).filter(Boolean);
 
   return (
@@ -43,11 +56,7 @@ export default async function CocktailPage({ params }: Props) {
         </p>
 
         <article className="grid gap-8 sm:grid-cols-2">
-          <div
-            role="img"
-            aria-label={dict.posterPlaceholder}
-            className="aspect-[3/4] w-full bg-zinc-200 dark:bg-zinc-800"
-          />
+          <Poster spec={poster} title={posterAlt} className="block h-auto w-full" />
 
           <div>
             <h1 lang="vi" className="text-3xl font-semibold">

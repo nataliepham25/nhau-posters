@@ -9,7 +9,8 @@
     "lint": "eslint",
     "cf:check": "tsx scripts/check-contentful.ts",
     "cf:migrate": "tsx scripts/migrate.ts",
-    "cf:seed": "tsx scripts/seed.ts"
+    "cf:seed": "tsx scripts/seed.ts",
+    "test": "vitest run"
   },
   "dependencies": {
     "contentful": "^11.12.10",
@@ -30,6 +31,7 @@
     "eslint-config-next": "16.4.0",
     "tailwindcss": "^4",
     "tsx": "^4.23.15",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.11"
   }
 }

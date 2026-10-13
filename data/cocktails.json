@@ -10,9 +10,9 @@
     { "name": { "en-US": "gin", "vi": "TODO" }, "category": "base spirit", "colorHint": "#D9E6DF" },
     { "name": { "en-US": "tequila", "vi": "TODO" }, "category": "base spirit", "colorHint": "#E3D3A1" },
     { "name": { "en-US": "sauvignon blanc", "vi": "TODO" }, "category": "wine", "colorHint": "#E6E0A8" },
-    { "name": { "en-US": "Vietnamese arabica & robusta coffee", "vi": "TODO" }, "category": "spice", "colorHint": "#4A2C1D" },
+    { "name": { "en-US": "Vietnamese arabica & robusta coffee", "vi": "TODO" }, "category": "bitter", "colorHint": "#4A2C1D" },
     { "name": { "en-US": "spices", "vi": "TODO" }, "category": "spice", "colorHint": "#A0522D" },
-    { "name": { "en-US": "cacao", "vi": "TODO" }, "category": "spice", "colorHint": "#5C3A21" },
+    { "name": { "en-US": "cacao", "vi": "TODO" }, "category": "bitter", "colorHint": "#5C3A21" },
     { "name": { "en-US": "phở spices", "vi": "TODO" }, "category": "spice", "colorHint": "#8B4A2B" },
     { "name": { "en-US": "Thai chili", "vi": "TODO" }, "category": "spice", "colorHint": "#C1121F" },
     { "name": { "en-US": "fish sauce", "vi": "TODO" }, "category": "savory", "colorHint": "#B5702A" },
@@ -80,7 +80,7 @@
     {
       "name": "Canh Chua",
       "slug": "canh-chua",
-      "subtitle": { "en-US": "Sour Soup", "vi": "TODO" },
+      "subtitle": { "en-US": "Sour Soup", "vi": "Canh Chua miền Tây" },
       "story": {
         "en-US": "In the waterways of the Mê Kông Delta, food has always reflected what grows, swims, and thrives nearby. Canh chua is one of Southern Vietnam's most beloved expressions of that abundance.",
         "vi": "TODO"

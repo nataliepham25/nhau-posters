@@ -8,6 +8,11 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL(`/${DEFAULT_LOCALE}`, request.url));
   }
 
+  // Development tools (e.g. /dev/posters) live outside the locale routes.
+  if (process.env.NODE_ENV !== "production" && pathname.startsWith("/dev/")) {
+    return;
+  }
+
   // Unknown locales (e.g. /fr) would otherwise reach the [locale] root layout,
   // whose notFound() can only show Next's bare default 404. Rewriting here
   // serves app/global-not-found.tsx with a real 404 status instead.
