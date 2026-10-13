@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "cf:check": "tsx scripts/check-contentful.ts",
-    "cf:migrate": "tsx scripts/migrate.ts"
+    "cf:migrate": "tsx scripts/migrate.ts",
+    "cf:seed": "tsx scripts/seed.ts"
   },
   "dependencies": {
     "contentful": "^11.12.10",

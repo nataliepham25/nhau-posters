@@ -17,7 +17,7 @@ Content lives in Contentful.
 ## Locales
 
 - `en-US` (default)
-- `vi-VN`
+- `vi`
 - Vietnamese falls back to English for untranslated fields.
 
 ## Conventions

@@ -1,0 +1,127 @@
+{
+  "regions": [
+    { "name": { "en-US": "Huế", "vi": "TODO" }, "area": "Central" },
+    { "name": { "en-US": "Sài Gòn", "vi": "TODO" }, "area": "South" },
+    { "name": { "en-US": "Mekong Delta", "vi": "TODO" }, "area": "South" },
+    { "name": { "en-US": "Bắc Giang", "vi": "TODO" }, "area": "North" }
+  ],
+  "ingredients": [
+    { "name": { "en-US": "vodka", "vi": "TODO" }, "category": "base spirit", "colorHint": "#E8E4DC" },
+    { "name": { "en-US": "gin", "vi": "TODO" }, "category": "base spirit", "colorHint": "#D9E6DF" },
+    { "name": { "en-US": "tequila", "vi": "TODO" }, "category": "base spirit", "colorHint": "#E3D3A1" },
+    { "name": { "en-US": "sauvignon blanc", "vi": "TODO" }, "category": "wine", "colorHint": "#E6E0A8" },
+    { "name": { "en-US": "Vietnamese arabica & robusta coffee", "vi": "TODO" }, "category": "spice", "colorHint": "#4A2C1D" },
+    { "name": { "en-US": "spices", "vi": "TODO" }, "category": "spice", "colorHint": "#A0522D" },
+    { "name": { "en-US": "cacao", "vi": "TODO" }, "category": "spice", "colorHint": "#5C3A21" },
+    { "name": { "en-US": "phở spices", "vi": "TODO" }, "category": "spice", "colorHint": "#8B4A2B" },
+    { "name": { "en-US": "Thai chili", "vi": "TODO" }, "category": "spice", "colorHint": "#C1121F" },
+    { "name": { "en-US": "fish sauce", "vi": "TODO" }, "category": "savory", "colorHint": "#B5702A" },
+    { "name": { "en-US": "beef", "vi": "TODO" }, "category": "savory", "colorHint": "#7A2E22" },
+    { "name": { "en-US": "lime", "vi": "TODO" }, "category": "sour", "colorHint": "#9BC53D" },
+    { "name": { "en-US": "tamarind", "vi": "TODO" }, "category": "sour", "colorHint": "#6B3E26" },
+    { "name": { "en-US": "rice vinegar", "vi": "TODO" }, "category": "sour", "colorHint": "#EDE3C3" },
+    { "name": { "en-US": "tomato", "vi": "TODO" }, "category": "sour", "colorHint": "#D9432B" },
+    { "name": { "en-US": "condensed milk", "vi": "TODO" }, "category": "sweet and creamy", "colorHint": "#F3E9D2" },
+    { "name": { "en-US": "salted cream foam", "vi": "TODO" }, "category": "sweet and creamy", "colorHint": "#F7F2E8" },
+    { "name": { "en-US": "coconut", "vi": "TODO" }, "category": "sweet and creamy", "colorHint": "#F5F0E6" },
+    { "name": { "en-US": "pineapple", "vi": "TODO" }, "category": "fruit", "colorHint": "#F2C230" },
+    { "name": { "en-US": "lychee", "vi": "TODO" }, "category": "fruit", "colorHint": "#F4C6C8" },
+    { "name": { "en-US": "lemongrass", "vi": "TODO" }, "category": "herb and aromatic", "colorHint": "#C9D96F" },
+    { "name": { "en-US": "ginger", "vi": "TODO" }, "category": "herb and aromatic", "colorHint": "#D9B26B" },
+    { "name": { "en-US": "herbs", "vi": "TODO" }, "category": "herb and aromatic", "colorHint": "#4F8A3C" },
+    { "name": { "en-US": "butterfly pea", "vi": "TODO" }, "category": "floral", "colorHint": "#3C4FB4" },
+    { "name": { "en-US": "rose", "vi": "TODO" }, "category": "floral", "colorHint": "#C2185B" },
+    { "name": { "en-US": "CO₂", "vi": "TODO" }, "category": "technique", "colorHint": "#DDEFF5" }
+  ],
+  "cocktails": [
+    {
+      "name": "Cà Phê Muối",
+      "slug": "ca-phe-muoi",
+      "subtitle": { "en-US": "Salted Vietnamese Coffee", "vi": "TODO" },
+      "story": {
+        "en-US": "Cà phê muối traces its origins to Huế, where it emerged as a distinctly local take on the country's already deep coffee culture. Once largely associated with the former imperial capital, cà phê muối has traveled far, becoming a fixture at cafés throughout Vietnam and, increasingly, around the world.",
+        "vi": "TODO"
+      },
+      "inspiredBy": { "en-US": "Cà phê muối (salted coffee)", "vi": "TODO" },
+      "region": "Huế",
+      "ingredients": [
+        "vodka",
+        "Vietnamese arabica & robusta coffee",
+        "spices",
+        "cacao",
+        "fish sauce",
+        "condensed milk",
+        "salted cream foam"
+      ],
+      "flavor": { "sweet": 6, "sour": 1, "bitter": 7, "umami": 4, "herbal": 1, "spicy": 3 }
+    },
+    {
+      "name": "Phở Sài Gòn",
+      "slug": "pho-sai-gon",
+      "subtitle": { "en-US": "Inspired by Southern Style Phở", "vi": "TODO" },
+      "story": {
+        "en-US": "Phở emerged in northern Vietnam before traveling south with Vietnamese migration following the partition of the country in 1954 and evolved in flavor. With both our co-founders tracing their roots to Southern Vietnam, we naturally looked south—and to the flavors of phở Sài Gòn.",
+        "vi": "TODO"
+      },
+      "inspiredBy": { "en-US": "Southern-style phở", "vi": "TODO" },
+      "region": "Sài Gòn",
+      "ingredients": [
+        "gin",
+        "beef",
+        "phở spices",
+        "lemongrass",
+        "ginger",
+        "lime",
+        "fish sauce",
+        "herbs"
+      ],
+      "flavor": { "sweet": 2, "sour": 4, "bitter": 1, "umami": 8, "herbal": 7, "spicy": 5 }
+    },
+    {
+      "name": "Canh Chua",
+      "slug": "canh-chua",
+      "subtitle": { "en-US": "Sour Soup", "vi": "TODO" },
+      "story": {
+        "en-US": "In the waterways of the Mê Kông Delta, food has always reflected what grows, swims, and thrives nearby. Canh chua is one of Southern Vietnam's most beloved expressions of that abundance.",
+        "vi": "TODO"
+      },
+      "inspiredBy": { "en-US": "Canh chua (Southern Vietnamese sour soup)", "vi": "TODO" },
+      "region": "Mekong Delta",
+      "ingredients": [
+        "tequila",
+        "tamarind",
+        "rice vinegar",
+        "pineapple",
+        "coconut",
+        "tomato",
+        "fish sauce",
+        "herbs",
+        "Thai chili",
+        "CO₂"
+      ],
+      "flavor": { "sweet": 4, "sour": 8, "bitter": 1, "umami": 5, "herbal": 5, "spicy": 5 }
+    },
+    {
+      "name": "Anh Yêu Em",
+      "slug": "anh-yeu-em",
+      "subtitle": { "en-US": "I Love You", "vi": "TODO" },
+      "story": {
+        "en-US": "As summer arrives in Vietnam, so does Tết Đoan Ngọ, a traditional festival marking the summer solstice, where seasonal fruits—particularly those grown in Bắc Giang—are celebrated. With their brilliant red skins and perfumed sweetness, lychees carry associations with prosperity, romance, and fertility. Here, this Eastern symbol of love meets rose, one of the West's most enduring, in a drink.",
+        "vi": "TODO"
+      },
+      "inspiredBy": { "en-US": "Tết Đoan Ngọ and Bắc Giang lychees", "vi": "TODO" },
+      "region": "Bắc Giang",
+      "ingredients": [
+        "gin",
+        "sauvignon blanc",
+        "butterfly pea",
+        "lemongrass",
+        "lime",
+        "spices",
+        "rose",
+        "lychee"
+      ],
+      "flavor": { "sweet": 6, "sour": 4, "bitter": 1, "umami": 0, "herbal": 4, "spicy": 2 }
+    }
+  ]
+}
