@@ -14,11 +14,18 @@ export function SiteHeader({ locale, path }: Props) {
   const dict = getDictionary(locale);
 
   return (
-    <header className="flex items-center justify-between gap-4 border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
-      <Link href={localePath(locale)} className="font-semibold tracking-wide">
-        {dict.siteTitle}
-      </Link>
-      <LanguageSwitcher locale={locale} path={path} />
+    <header className="border-b border-border">
+      <div className="container-page flex items-center justify-between gap-6 py-4">
+        {/* Generous line height leaves room for the stacked marks on Ậ. */}
+        <Link
+          href={localePath(locale)}
+          lang="vi"
+          className="font-serif text-[1.75rem] font-medium leading-[1.5] tracking-[0.18em]"
+        >
+          {dict.siteTitle}
+        </Link>
+        <LanguageSwitcher locale={locale} path={path} />
+      </div>
     </header>
   );
 }

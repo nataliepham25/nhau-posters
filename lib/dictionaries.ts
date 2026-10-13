@@ -8,9 +8,16 @@ import type { Area, Locale } from "./types";
 const TODO = "TODO";
 
 const en = {
-  siteTitle: "NHAU",
+  siteTitle: "NHẬU",
   siteDescription: "Vietnamese cocktails from NHAU, each with its own flavor poster.",
   cocktailsHeading: "Cocktails",
+  introLabel: "Vietnamese cocktails by NHẬU",
+  introHeading: "Flavor, given shape",
+  introBody:
+    "Each cocktail begins with a place and a dish we grew up with. Its poster is drawn from its flavor (how sweet, sour, bitter, savory, herbal, and spicy it is), so no two look alike.",
+  skipToContent: "Skip to content",
+  footerCredit: "Cocktails and stories by NHẬU",
+  footerPosters: "Posters are generated from each drink's flavor.",
   allCocktails: "All cocktails",
   region: "Region",
   ingredients: "Ingredients",
@@ -82,9 +89,16 @@ const en = {
 export type Dictionary = typeof en;
 
 const vi: Dictionary = {
-  siteTitle: TODO,
+  siteTitle: "NHẬU",
   siteDescription: TODO,
   cocktailsHeading: TODO,
+  introLabel: "Cocktail Việt của NHẬU",
+  introHeading: "Hương vị thành hình",
+  introBody:
+    "Mỗi ly cocktail bắt đầu từ một vùng đất và một món ăn đã gắn bó với chúng tôi từ nhỏ. Tấm poster của mỗi ly được vẽ từ chính hương vị của nó (ngọt, chua, đắng, đậm đà, thơm mùi thảo mộc và cay đến đâu), nên không có hai tấm nào giống nhau.",
+  skipToContent: "Chuyển đến nội dung chính",
+  footerCredit: "Cocktail và câu chuyện của NHẬU",
+  footerPosters: "Mỗi tấm poster được tạo từ hương vị của từng ly.",
   allCocktails: TODO,
   region: TODO,
   ingredients: TODO,

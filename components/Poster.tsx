@@ -5,19 +5,18 @@ import type { Paint, PosterSpec, Shape } from "@/lib/poster/types";
 type Props = {
   spec: PosterSpec;
   /**
-   * Alt text. When given, the poster is announced as an image with this
-   * description; when omitted, it's treated as decorative and hidden from
-   * assistive technology.
+   * Alt text, exposed as aria-label (not an SVG <title>, which browsers show
+   * as a hover tooltip). When omitted, the poster is decorative and hidden
+   * from assistive technology.
    */
-  title?: string;
+  label?: string;
   className?: string;
 };
 
 // Renders a PosterSpec as static SVG. All design decisions live in
 // lib/poster/generate.ts; this file only translates shapes into SVG elements.
-export function Poster({ spec, title, className }: Props) {
+export function Poster({ spec, label, className }: Props) {
   const ids = {
-    title: `${spec.id}-title`,
     background: `${spec.id}-bg`,
     gradient: (paint: Exclude<Paint, string>) =>
       `${spec.id}-g-${paint.from.slice(1)}-${paint.to.slice(1)}`,
@@ -34,8 +33,8 @@ export function Poster({ spec, title, className }: Props) {
 
   const paint = (fill: Paint) => (typeof fill === "string" ? fill : `url(#${ids.gradient(fill)})`);
 
-  const accessibility = title
-    ? { role: "img", "aria-labelledby": ids.title }
+  const accessibility = label
+    ? { role: "img", "aria-label": label }
     : { "aria-hidden": true, focusable: false };
 
   return (
@@ -45,7 +44,6 @@ export function Poster({ spec, title, className }: Props) {
       className={className}
       {...accessibility}
     >
-      {title && <title id={ids.title}>{title}</title>}
       <defs>
         <linearGradient id={ids.background} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor={spec.background.top} />

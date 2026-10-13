@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { CSSProperties } from "react";
 import { Poster } from "@/components/Poster";
 import { SiteHeader } from "@/components/SiteHeader";
 import { getCocktails } from "@/lib/contentful";
@@ -31,26 +32,36 @@ export default async function CocktailIndexPage({ params }: PageProps<"/[locale]
   return (
     <>
       <SiteHeader locale={locale} />
-      <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-10">
-        <h1 className="mb-8 text-3xl font-semibold">{dict.cocktailsHeading}</h1>
-        <ul className="grid gap-6 sm:grid-cols-2">
-          {cocktails.map((cocktail) => (
-            <li key={cocktail.id}>
-              <Link
-                href={localePath(locale, `/cocktails/${cocktail.slug}`)}
-                className="block rounded border border-zinc-200 p-4 hover:border-zinc-400 dark:border-zinc-800 dark:hover:border-zinc-600"
-              >
+      <main id="main" className="container-page pb-24">
+        <section className="reveal max-w-3xl py-16 sm:py-24">
+          <p className="text-label uppercase text-accent">{dict.introLabel}</p>
+          <h1 className="mt-4 font-serif text-display font-medium">{dict.introHeading}</h1>
+          <p className="mt-6 max-w-[60ch] font-serif text-lead italic text-muted">{dict.introBody}</p>
+        </section>
+
+        <ul className="grid gap-x-10 gap-y-16 sm:grid-cols-2">
+          {cocktails.map((cocktail, index) => (
+            <li
+              key={cocktail.id}
+              className="reveal"
+              style={{ "--reveal-index": index + 1 } as CSSProperties}
+            >
+              <Link href={localePath(locale, `/cocktails/${cocktail.slug}`)} className="poster-card group block">
                 {/* Decorative here: the link text already names the cocktail. */}
-                <Poster
-                  spec={generatePoster(posterSource.get(cocktail.slug) ?? cocktail)}
-                  className="mb-4 block h-auto w-full"
-                />
-                <h2 lang="vi" className="text-xl font-semibold">
-                  {cocktail.name}
+                <div className="poster-frame bg-poster">
+                  <Poster
+                    spec={generatePoster(posterSource.get(cocktail.slug) ?? cocktail)}
+                    className="block h-auto w-full"
+                  />
+                </div>
+                <h2 lang="vi" className="mt-6 font-serif text-title font-medium">
+                  <span className="underline decoration-transparent decoration-1 underline-offset-[6px] transition-colors group-hover:decoration-accent">
+                    {cocktail.name}
+                  </span>
                 </h2>
-                <p className="text-zinc-600 dark:text-zinc-400">{cocktail.subtitle}</p>
+                <p className="mt-1 font-serif text-lead italic text-muted">{cocktail.subtitle}</p>
                 {cocktail.region && (
-                  <p className="mt-2 text-sm text-zinc-500">{cocktail.region.name}</p>
+                  <p className="mt-3 text-label uppercase text-muted">{cocktail.region.name}</p>
                 )}
               </Link>
             </li>

@@ -1,26 +1,144 @@
 @import "tailwindcss";
 
+/*
+ * Design tokens. Dark (NHAU's deep teal) is the default; light applies under
+ * prefers-color-scheme: light. Posters keep their own dark background in both.
+ * Contrast (WCAG AA): every text color here is at least 4.5:1 on --bg and
+ * --surface in both themes.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #1d3030;
+  --surface: #243838;
+  --text: #efe5d2;
+  --text-muted: #bdb4a3;
+  --accent: #c2b499;
+  --border: #3e5654;
+  --focus: var(--accent);
+  --poster-bg: #243838;
+  --poster-shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px rgb(0 0 0 / 0.25);
+  --poster-shadow-hover: 0 2px 4px rgb(0 0 0 / 0.35), 0 18px 40px rgb(0 0 0 / 0.4);
+
+  --sans-stack: var(--font-dm-sans), var(--font-be-vietnam), ui-sans-serif, system-ui, sans-serif;
+  --sans-stack-vi: var(--font-be-vietnam), var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+
+  color-scheme: dark;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --bg: #f5efe3;
+    --surface: #fbf7ef;
+    --text: #1d3030;
+    --text-muted: #4e5d5a;
+    --accent: #75653f;
+    --border: #d9cfbd;
+    --poster-shadow: 0 1px 2px rgb(29 48 48 / 0.12), 0 8px 24px rgb(29 48 48 / 0.16);
+    --poster-shadow-hover: 0 2px 4px rgb(29 48 48 / 0.16), 0 18px 40px rgb(29 48 48 / 0.24);
+
+    color-scheme: light;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-text: var(--text);
+  --color-muted: var(--text-muted);
+  --color-accent: var(--accent);
+  --color-border: var(--border);
+  --color-poster: var(--poster-bg);
+
+  --font-serif: var(--font-cormorant), Georgia, "Times New Roman", serif;
+  --font-sans: var(--sans-stack);
+
+  /* Type scale. Line heights never go below 1.15, so stacked Vietnamese
+     diacritics (ố, ậ) don't collide when titles wrap. */
+  --text-display: clamp(2.75rem, 1.9rem + 3.6vw, 4.75rem);
+  --text-display--line-height: 1.15;
+  --text-title: clamp(1.625rem, 1.4rem + 0.9vw, 2rem);
+  --text-title--line-height: 1.2;
+  --text-lead: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
+  --text-lead--line-height: 1.45;
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.65;
+  --text-ui: 0.9375rem;
+  --text-ui--line-height: 1.5;
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.4;
+  --text-label--letter-spacing: 0.14em;
+  --text-label--font-weight: 600;
+}
+
+@layer base {
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans-stack);
+  }
+
+  /* Vietnamese pages, and Vietnamese words on English pages, lead with Be
+     Vietnam Pro. Utilities like font-serif still win over this. */
+  [lang="vi"] {
+    font-family: var(--sans-stack-vi);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--bg);
+  }
+}
+
+@layer components {
+  /* Page width and side gutters shared by header, main and footer. */
+  .container-page {
+    width: 100%;
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: clamp(1rem, 4vw, 2.5rem);
+  }
+
+  /* Index cards: the poster lifts on hover. The shadow change always applies;
+     the lift and entrance animation only without reduced motion. */
+  .poster-card .poster-frame {
+    box-shadow: var(--poster-shadow);
+    transition: box-shadow 200ms ease;
+  }
+  .poster-card:hover .poster-frame,
+  .poster-card:focus-visible .poster-frame {
+    box-shadow: var(--poster-shadow-hover);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .poster-card .poster-frame {
+      transition:
+        box-shadow 200ms ease,
+        transform 200ms ease;
+    }
+    .poster-card:hover .poster-frame,
+    .poster-card:focus-visible .poster-frame {
+      transform: translateY(-4px);
+    }
+
+    .reveal {
+      animation: reveal 600ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+      animation-delay: calc(var(--reveal-index, 0) * 80ms);
+    }
+  }
+
+  @keyframes reveal {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
 }

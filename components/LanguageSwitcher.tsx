@@ -16,11 +16,11 @@ export function LanguageSwitcher({ locale, path = "" }: Props) {
 
   return (
     <nav aria-label={dict.languageSwitcherLabel}>
-      <ul className="flex gap-3 text-sm">
+      <ul className="flex items-center gap-5 text-ui">
         {LOCALES.map((target) => (
           <li key={target}>
             {target === locale ? (
-              <span aria-current="page" lang={HTML_LANG[target]} className="font-semibold">
+              <span aria-current="page" lang={HTML_LANG[target]} className="font-medium text-text">
                 {LANGUAGE_NAMES[target]}
               </span>
             ) : (
@@ -28,7 +28,7 @@ export function LanguageSwitcher({ locale, path = "" }: Props) {
                 href={localePath(target, path)}
                 hrefLang={HTML_LANG[target]}
                 lang={HTML_LANG[target]}
-                className="underline underline-offset-4"
+                className="text-muted underline decoration-border underline-offset-[6px] transition-colors hover:text-text hover:decoration-accent"
               >
                 {LANGUAGE_NAMES[target]}
               </Link>

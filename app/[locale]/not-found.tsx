@@ -14,11 +14,14 @@ export default async function NotFound() {
   return (
     <>
       <SiteHeader locale={locale} />
-      <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-10">
-        <h1 className="text-3xl font-semibold">{dict.notFoundHeading}</h1>
-        <p className="mt-4">{dict.notFoundBody}</p>
-        <p className="mt-6">
-          <Link href={localePath(locale)} className="underline underline-offset-4">
+      <main id="main" className="container-page py-24">
+        <h1 className="font-serif text-display font-medium">{dict.notFoundHeading}</h1>
+        <p className="mt-4 font-serif text-lead italic text-muted">{dict.notFoundBody}</p>
+        <p className="mt-8 text-ui">
+          <Link
+            href={localePath(locale)}
+            className="underline decoration-accent underline-offset-[6px] transition-colors hover:text-accent"
+          >
             {dict.allCocktails}
           </Link>
         </p>

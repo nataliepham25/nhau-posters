@@ -23,7 +23,7 @@ export default async function DevPostersPage() {
           const alt = describePoster(spec, strings);
           return (
             <li key={cocktail.id}>
-              <Poster spec={spec} title={alt} className="block h-auto w-full" />
+              <Poster spec={spec} label={alt} className="block h-auto w-full" />
               <h2 lang="vi" className="mt-3 text-lg font-semibold">
                 {cocktail.name}
               </h2>

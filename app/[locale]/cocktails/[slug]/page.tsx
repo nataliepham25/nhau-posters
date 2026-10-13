@@ -8,6 +8,7 @@ import { getDictionary } from "@/lib/dictionaries";
 import { DEFAULT_LOCALE, isLocale, localePath } from "@/lib/i18n";
 import { describePoster } from "@/lib/poster/describe";
 import { generatePoster } from "@/lib/poster/generate";
+import { ingredientColor } from "@/lib/poster/palette";
 
 type Props = PageProps<"/[locale]/cocktails/[slug]">;
 
@@ -48,49 +49,71 @@ export default async function CocktailPage({ params }: Props) {
   return (
     <>
       <SiteHeader locale={locale} path={`/cocktails/${cocktail.slug}`} />
-      <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-10">
-        <p className="mb-6 text-sm">
-          <Link href={localePath(locale)} className="underline underline-offset-4">
-            {dict.allCocktails}
-          </Link>
-        </p>
+      <main id="main" className="container-page pb-24 pt-10">
+        <Link
+          href={localePath(locale)}
+          className="text-ui text-muted underline decoration-border underline-offset-[6px] transition-colors hover:text-text hover:decoration-accent"
+        >
+          <span aria-hidden="true">← </span>
+          {dict.allCocktails}
+        </Link>
 
-        <article className="grid gap-8 sm:grid-cols-2">
-          <Poster spec={poster} title={posterAlt} className="block h-auto w-full" />
+        <article className="mt-8 grid gap-12 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-5">
+            <div className="mx-auto max-w-[520px] lg:sticky lg:top-8">
+              <div className="bg-poster shadow-[var(--poster-shadow)]">
+                <Poster spec={poster} label={posterAlt} className="block h-auto w-full" />
+              </div>
+            </div>
+          </div>
 
-          <div>
-            <h1 lang="vi" className="text-3xl font-semibold">
+          <div className="max-w-[62ch] lg:col-span-7">
+            <h1 lang="vi" className="font-serif text-display font-medium">
               {cocktail.name}
             </h1>
-            <p className="mt-1 text-lg text-zinc-600 dark:text-zinc-400">{cocktail.subtitle}</p>
+            <p className="mt-2 font-serif text-lead italic text-muted">{cocktail.subtitle}</p>
 
-            <dl className="mt-6 space-y-2 text-sm">
+            <dl className="mt-8 grid gap-5 border-y border-border py-5 sm:grid-cols-2">
               {cocktail.region && (
                 <div>
-                  <dt className="inline font-semibold">{dict.region}: </dt>
-                  <dd className="inline">
-                    {cocktail.region.name} ({dict.areas[cocktail.region.area]})
+                  <dt className="text-label uppercase text-accent">{dict.region}</dt>
+                  <dd className="mt-1 text-ui">
+                    {cocktail.region.name}, {dict.areas[cocktail.region.area]}
                   </dd>
                 </div>
               )}
               <div>
-                <dt className="inline font-semibold">{dict.inspiredBy}: </dt>
-                <dd className="inline">{cocktail.inspiredBy}</dd>
+                <dt className="text-label uppercase text-accent">{dict.inspiredBy}</dt>
+                <dd className="mt-1 text-ui">{cocktail.inspiredBy}</dd>
               </div>
             </dl>
 
-            <div className="mt-6 space-y-4">
+            <div className="mt-8 space-y-5 text-body">
               {paragraphs.map((paragraph, index) => (
                 <p key={index}>{paragraph}</p>
               ))}
             </div>
 
             {cocktail.ingredients.length > 0 && (
-              <section className="mt-8">
-                <h2 className="mb-2 text-lg font-semibold">{dict.ingredients}</h2>
-                <ol className="list-decimal space-y-1 pl-5">
-                  {cocktail.ingredients.map((ingredient) => (
-                    <li key={ingredient.id}>{ingredient.name}</li>
+              <section className="mt-12" aria-labelledby="ingredients-heading">
+                <h2 id="ingredients-heading" className="text-label uppercase text-accent">
+                  {dict.ingredients}
+                </h2>
+                {/* role="list" keeps list semantics in Safari despite list-style: none. */}
+                <ol role="list" className="mt-4 border-t border-border">
+                  {cocktail.ingredients.map((ingredient, index) => (
+                    <li key={ingredient.id} className="flex items-center gap-4 border-b border-border py-3">
+                      <span aria-hidden="true" className="w-7 font-serif text-lg lining-nums tabular-nums text-accent">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <span
+                        aria-hidden="true"
+                        // The hairline ring keeps pale colors (vodka, cream) visible on the light theme.
+                        className="size-2.5 shrink-0 rounded-full ring-1 ring-border"
+                        style={{ background: ingredientColor(ingredient) }}
+                      />
+                      <span className="text-ui">{ingredient.name}</span>
+                    </li>
                   ))}
                 </ol>
               </section>
