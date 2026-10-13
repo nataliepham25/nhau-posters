@@ -2,19 +2,7 @@ import path from "node:path";
 import { config } from "dotenv";
 import { createClient } from "contentful-management";
 
-// TEMP diagnostics: dotenv does not override variables already set in the shell.
-const tokenSetInShell = process.env.CONTENTFUL_MANAGEMENT_TOKEN !== undefined;
-const envPath = path.resolve(".env.local");
-
-config({ path: envPath, quiet: true });
-
-console.log("[diag] token already set in shell:", tokenSetInShell);
-console.log("[diag] loading env file:", envPath);
-console.log(
-  "[diag] token length:",
-  process.env.CONTENTFUL_MANAGEMENT_TOKEN?.length ?? "(not set)",
-);
-// END TEMP diagnostics
+config({ path: path.resolve(".env.local"), quiet: true });
 
 const spaceId = process.env.CONTENTFUL_SPACE_ID;
 const environmentId = process.env.CONTENTFUL_ENVIRONMENT ?? "master";
