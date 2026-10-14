@@ -17,7 +17,7 @@ export type PosterInput = {
 /** A solid hex color, or a vertical gradient from top to bottom. */
 export type Paint = string | { type: "gradient"; from: string; to: string };
 
-/** Motion the renderer may add later. Ignored by the static renderer. */
+/** Ambient motion, drawn only by the live renderer (`<Poster live>`). */
 export type AnimationHint =
   | { kind: "rise"; distance: number; duration: number; delay: number }
   | { kind: "sway"; angle: number; duration: number; delay: number }

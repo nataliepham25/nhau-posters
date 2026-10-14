@@ -374,6 +374,15 @@ describe("mapping rules", () => {
     }
   });
 
+  it("never lets a rising bubble drift past the frame", () => {
+    for (const input of cocktailInputs) {
+      for (const bubble of generatePoster(input).shapes.filter((s) => s.type === "bubble")) {
+        if (bubble.animation?.kind !== "rise") throw new Error("expected a rise hint");
+        expect(bubble.y - bubble.animation.distance).toBeGreaterThanOrEqual(SAFE_MARGIN);
+      }
+    }
+  });
+
   it("shifts butterfly pea toward pink as sour rises", () => {
     const pinkness = (sour: number) => {
       const spec = generatePoster(withFlavor(base, { ...base.flavor, sour }));

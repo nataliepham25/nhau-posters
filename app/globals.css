@@ -142,3 +142,76 @@
     }
   }
 }
+
+/*
+ * Poster motion (components/Poster.tsx, `live` and `morph`). Nothing moves
+ * under prefers-reduced-motion: bubbles and leaves rest in their drawn
+ * positions, regenerated shapes jump into place, and butterfly pea's color
+ * change on hover is instant instead of a fade.
+ */
+@layer components {
+  .poster-live .poster-shift {
+    opacity: 0;
+  }
+  .poster-live:hover .poster-shift {
+    opacity: 0.9;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .poster-live .poster-shift {
+      transition: opacity 1.4s ease;
+    }
+
+    .poster-live .poster-rise {
+      animation: poster-rise var(--duration) linear var(--delay) infinite;
+    }
+    .poster-live .poster-sway {
+      animation: poster-sway var(--duration) ease-in-out var(--delay) infinite alternate;
+    }
+
+    .poster-morph .poster-shape {
+      transition:
+        transform 600ms cubic-bezier(0.3, 0.7, 0.2, 1),
+        opacity 600ms ease;
+    }
+    .poster-morph .poster-shape * {
+      transition-property: d, r, x, y, width, height, rx, ry, fill, stroke;
+      transition-duration: 600ms;
+      transition-timing-function: cubic-bezier(0.3, 0.7, 0.2, 1);
+    }
+  }
+
+  /* Shapes added by a slider fade in instead of popping. Without a
+     transition (reduced motion) this has no effect, so it needs no media
+     query; written inside one, the build dropped the whole block. */
+  @starting-style {
+    .poster-morph .poster-shape {
+      opacity: 0;
+    }
+  }
+
+  /* Bubbles drift up, growing slightly, and fade out before the frame. */
+  @keyframes poster-rise {
+    0% {
+      transform: translateY(0) scale(0.85);
+      opacity: 0;
+    }
+    15%,
+    75% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(var(--rise)) scale(1.1);
+      opacity: 0;
+    }
+  }
+
+  @keyframes poster-sway {
+    from {
+      transform: rotate(calc(var(--sway) * -1));
+    }
+    to {
+      transform: rotate(var(--sway));
+    }
+  }
+}

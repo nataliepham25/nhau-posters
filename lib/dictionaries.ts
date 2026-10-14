@@ -1,5 +1,5 @@
 import type { ColorName, ColorShade, PosterComposition } from "./poster/describe";
-import type { Form } from "./poster/types";
+import type { Flavor, Form } from "./poster/types";
 import type { Area, Locale } from "./types";
 
 // UI strings. Vietnamese values marked TODO fall back to English at runtime,
@@ -22,6 +22,23 @@ const en = {
   region: "Region",
   ingredients: "Ingredients",
   inspiredBy: "Inspired by",
+  playground: {
+    heading: "Playground",
+    intro: "Change the flavor balance and watch the poster redraw itself. The ingredients stay the same.",
+    flavors: {
+      sweet: "Sweet",
+      sour: "Sour",
+      bitter: "Bitter",
+      umami: "Savory (umami)",
+      herbal: "Herbal",
+      spicy: "Spicy",
+    } satisfies Record<Flavor, string>,
+    // Read by screen readers as each slider's value.
+    value: "{value} of 10",
+    reset: "Reset",
+    resetDone: "Flavors reset to the original values.",
+    download: "Download SVG",
+  },
   languageSwitcherLabel: "Language",
   notFoundHeading: "Page not found",
   notFoundBody: "We couldn't find the page you were looking for.",
@@ -103,6 +120,15 @@ const vi: Dictionary = {
   region: TODO,
   ingredients: TODO,
   inspiredBy: TODO,
+  playground: {
+    heading: TODO,
+    intro: TODO,
+    flavors: { sweet: TODO, sour: TODO, bitter: TODO, umami: TODO, herbal: TODO, spicy: TODO },
+    value: TODO,
+    reset: TODO,
+    resetDone: TODO,
+    download: TODO,
+  },
   languageSwitcherLabel: TODO,
   notFoundHeading: TODO,
   notFoundBody: TODO,

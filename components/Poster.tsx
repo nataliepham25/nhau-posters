@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { horizonPath, leafPath, petalPath, ribbonPath, surfacePath } from "@/lib/poster/geometry";
 import type { Paint, PosterSpec, Shape } from "@/lib/poster/types";
 
@@ -11,17 +11,30 @@ type Props = {
    */
   label?: string;
   className?: string;
+  /**
+   * Adds the ambient motion from each shape's animation hint (rising bubbles,
+   * swaying leaves) and butterfly pea's shift to pink on hover. The CSS in
+   * globals.css only runs it without prefers-reduced-motion.
+   */
+  live?: boolean;
+  /**
+   * Moves shapes with CSS instead of SVG attributes, so a regenerated spec
+   * transitions smoothly from the previous one instead of jumping.
+   */
+  morph?: boolean;
+  /** Prefix for SVG ids. Defaults to the spec id; set it when one page shows the same poster twice. */
+  idPrefix?: string;
 };
 
-// Renders a PosterSpec as static SVG. All design decisions live in
+// Renders a PosterSpec as SVG. All design decisions live in
 // lib/poster/generate.ts; this file only translates shapes into SVG elements.
-export function Poster({ spec, label, className }: Props) {
+export function Poster({ spec, label, className, live = false, morph = false, idPrefix = spec.id }: Props) {
   const ids = {
-    background: `${spec.id}-bg`,
+    background: `${idPrefix}-bg`,
     gradient: (paint: Exclude<Paint, string>) =>
-      `${spec.id}-g-${paint.from.slice(1)}-${paint.to.slice(1)}`,
-    grain: `${spec.id}-grain`,
-    mottle: `${spec.id}-mottle`,
+      `${idPrefix}-g-${paint.from.slice(1)}-${paint.to.slice(1)}`,
+    grain: `${idPrefix}-grain`,
+    mottle: `${idPrefix}-mottle`,
   };
 
   const gradients = new Map<string, Exclude<Paint, string>>();
@@ -30,6 +43,7 @@ export function Poster({ spec, label, className }: Props) {
   }
 
   const { frame, texture } = spec;
+  const keys = shapeKeys(spec.shapes);
 
   const paint = (fill: Paint) => (typeof fill === "string" ? fill : `url(#${ids.gradient(fill)})`);
 
@@ -41,7 +55,7 @@ export function Poster({ spec, label, className }: Props) {
     <svg
       viewBox={`0 0 ${spec.width} ${spec.height}`}
       xmlns="http://www.w3.org/2000/svg"
-      className={className}
+      className={[className, live && "poster-live", morph && "poster-morph"].filter(Boolean).join(" ") || undefined}
       {...accessibility}
     >
       <defs>
@@ -75,15 +89,21 @@ export function Poster({ spec, label, className }: Props) {
 
       <rect width={spec.width} height={spec.height} fill={`url(#${ids.background})`} />
 
-      {spec.shapes.map((shape, index) => (
-        <g
-          key={index}
-          transform={`translate(${shape.x} ${shape.y}) rotate(${shape.rotation})`}
-          opacity={shape.opacity}
-        >
-          {renderShape(shape, paint(shape.fill))}
-        </g>
-      ))}
+      {spec.shapes.map((shape, index) => {
+        const transform = `translate(${shape.x} ${shape.y}) rotate(${shape.rotation})`;
+        const body = renderShape(shape, paint(shape.fill), morph);
+        return (
+          <g
+            key={keys[index]}
+            className="poster-shape"
+            transform={transform}
+            style={morph ? { transform: `translate(${shape.x}px, ${shape.y}px) rotate(${shape.rotation}deg)` } : undefined}
+            opacity={shape.opacity}
+          >
+            {live && shape.animation ? animate(shape, body, morph) : body}
+          </g>
+        );
+      })}
 
       <rect
         width={spec.width}
@@ -116,45 +136,110 @@ export function Poster({ spec, label, className }: Props) {
   );
 }
 
-function renderShape(shape: Shape, fill: string): ReactNode {
+/**
+ * Keys that follow an ingredient across regenerations ("lime-3" stays the
+ * third lime shape), so React updates the same element and CSS can
+ * transition it instead of redrawing.
+ */
+export function shapeKeys(shapes: Shape[]): string[] {
+  const counts = new Map<string, number>();
+  return shapes.map((shape) => {
+    const owner = shape.ingredientId ?? shape.layer;
+    const count = counts.get(owner) ?? 0;
+    counts.set(owner, count + 1);
+    return `${owner}-${count}`;
+  });
+}
+
+/** Wraps a shape's body in the motion its animation hint describes. */
+function animate(shape: Shape, body: ReactNode, morph: boolean): ReactNode {
+  const hint = shape.animation!;
+  const timing = (duration: number, delay: number) => ({
+    "--duration": `${duration}s`,
+    // Negative, so every shape starts mid-cycle and they never move in unison.
+    "--delay": `${-delay}s`,
+  });
+
+  switch (hint.kind) {
+    case "rise":
+      return (
+        <g className="poster-rise" style={{ "--rise": `${-hint.distance}px`, ...timing(hint.duration, hint.delay) } as CSSProperties}>
+          {body}
+        </g>
+      );
+    case "sway":
+      return (
+        <g
+          className="poster-sway"
+          style={
+            {
+              "--sway": `${hint.angle}deg`,
+              ...timing(hint.duration, hint.delay),
+              // Leaves pivot at their base, which sits at the left end of the path.
+              transformOrigin: `${-shape.width / 2}px 0px`,
+            } as CSSProperties
+          }
+        >
+          {body}
+        </g>
+      );
+    case "colorShift":
+      // A copy in the target color, faded in on hover by CSS.
+      return (
+        <>
+          {body}
+          <g className="poster-shift">{renderShape(shape, hint.to, morph)}</g>
+        </>
+      );
+  }
+}
+
+/**
+ * Geometry as SVG attributes. With `morph`, it's repeated as CSS so it can
+ * transition; browsers that can't animate a property (Safari and path `d`)
+ * fall back to the attribute and simply jump.
+ */
+function geometry(attrs: Record<string, string | number>, morph: boolean) {
+  if (!morph) return attrs;
+  const style: Record<string, string> = {};
+  for (const [name, value] of Object.entries(attrs)) {
+    style[name] = name === "d" ? `path("${value}")` : typeof value === "number" ? `${value}px` : value;
+  }
+  return { ...attrs, style };
+}
+
+function renderShape(shape: Shape, fill: string, morph = false): ReactNode {
   const { width: w, height: h } = shape;
+  const g = (attrs: Record<string, string | number>) => geometry(attrs, morph);
 
   switch (shape.type) {
     case "band":
-      return <rect x={-w / 2} y={-h / 2} width={w} height={h} rx={Math.min(h / 2, 6)} fill={fill} />;
+      return <rect {...g({ x: -w / 2, y: -h / 2, width: w, height: h, rx: Math.min(h / 2, 6), fill })} />;
     case "softBand":
     case "stroke":
-      return <rect x={-w / 2} y={-h / 2} width={w} height={h} rx={h / 2} fill={fill} />;
+      return <rect {...g({ x: -w / 2, y: -h / 2, width: w, height: h, rx: h / 2, fill })} />;
     case "wash":
-      return <ellipse rx={w / 2} ry={h / 2} fill={fill} />;
+      return <ellipse {...g({ rx: w / 2, ry: h / 2, fill })} />;
     case "horizon":
-      return <path d={horizonPath(w, h, shape.curvature)} fill={fill} />;
+      return <path {...g({ d: horizonPath(w, h, shape.curvature), fill })} />;
     case "layer":
-      return (
-        <path d={surfacePath(w, h, shape.surface ?? { tilt: 0, meniscus: 0, waves: [] })} fill={fill} />
-      );
+      return <path {...g({ d: surfacePath(w, h, shape.surface ?? { tilt: 0, meniscus: 0, waves: [] }), fill })} />;
     case "ribbon":
-      return shape.ribbon ? <path d={ribbonPath(w, shape.ribbon)} fill={fill} /> : null;
+      return shape.ribbon ? <path {...g({ d: ribbonPath(w, shape.ribbon), fill })} /> : null;
     case "circle":
     case "dot":
-      return <circle r={w / 2} fill={fill} />;
+      return <circle {...g({ r: w / 2, fill })} />;
     case "ring": {
       const stroke = shape.strokeWidth ?? 8;
-      return <circle r={w / 2 - stroke / 2} fill="none" stroke={fill} strokeWidth={stroke} />;
+      return <circle {...g({ r: w / 2 - stroke / 2, fill: "none", stroke: fill, strokeWidth: stroke })} />;
     }
     case "bubble":
       return (
-        <circle
-          r={w / 2}
-          fill={fill}
-          fillOpacity={0.2}
-          stroke={fill}
-          strokeWidth={shape.strokeWidth ?? 1}
-        />
+        <circle {...g({ r: w / 2, fill, stroke: fill, strokeWidth: shape.strokeWidth ?? 1 })} fillOpacity={0.2} />
       );
     case "leaf":
-      return <path d={leafPath(w, h, shape.curvature)} fill={fill} />;
+      return <path {...g({ d: leafPath(w, h, shape.curvature), fill })} />;
     case "petal":
-      return <path d={petalPath(w, h)} fill={fill} />;
+      return <path {...g({ d: petalPath(w, h), fill })} />;
   }
 }

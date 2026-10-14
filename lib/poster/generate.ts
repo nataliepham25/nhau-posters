@@ -802,7 +802,8 @@ function bubbles(rng: Random, ctx: Context, color: string): Part {
       strokeWidth: 1.4,
       animation: {
         kind: "rise",
-        distance: rng.range(80, 200),
+        // Never far enough to drift past the frame.
+        distance: Math.min(rng.range(80, 200), y - SAFE_MARGIN),
         duration: rng.range(5, 10),
         delay: rng.range(0, 5),
       },

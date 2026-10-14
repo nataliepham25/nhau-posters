@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Poster } from "@/components/Poster";
+import { PosterPlayground } from "@/components/PosterPlayground";
 import { SiteHeader } from "@/components/SiteHeader";
 import { getCocktailBySlug, getCocktails } from "@/lib/contentful";
 import { getDictionary } from "@/lib/dictionaries";
@@ -39,11 +40,14 @@ export default async function CocktailPage({ params }: Props) {
   const posterSource =
     locale === DEFAULT_LOCALE ? cocktail : ((await getCocktailBySlug(slug, DEFAULT_LOCALE)) ?? cocktail);
   const poster = generatePoster(posterSource);
-  const posterAlt = describePoster(
-    poster,
-    dict.poster,
-    new Map(cocktail.ingredients.map((ingredient) => [ingredient.id, ingredient.name])),
-  );
+  const ingredientNames = cocktail.ingredients.map((ingredient) => [ingredient.id, ingredient.name] as [string, string]);
+  const posterAlt = describePoster(poster, dict.poster, new Map(ingredientNames));
+  // Only what generatePoster reads, so the client payload stays small.
+  const playgroundInput = {
+    slug: posterSource.slug,
+    flavor: posterSource.flavor,
+    ingredients: posterSource.ingredients.map(({ id, name, category, colorHint }) => ({ id, name, category, colorHint })),
+  };
   const paragraphs = cocktail.story.split(/\n\s*\n/).filter(Boolean);
 
   return (
@@ -62,7 +66,7 @@ export default async function CocktailPage({ params }: Props) {
           <div className="lg:col-span-5">
             <div className="mx-auto max-w-[520px] lg:sticky lg:top-8">
               <div className="bg-poster shadow-[var(--poster-shadow)]">
-                <Poster spec={poster} label={posterAlt} className="block h-auto w-full" />
+                <Poster spec={poster} label={posterAlt} live className="block h-auto w-full" />
               </div>
             </div>
           </div>
@@ -120,6 +124,19 @@ export default async function CocktailPage({ params }: Props) {
             )}
           </div>
         </article>
+
+        <section aria-labelledby="playground-heading" className="mt-20 border-t border-border pt-12">
+          <h2 id="playground-heading" className="font-serif text-title font-medium">
+            {dict.playground.heading}
+          </h2>
+          <p className="mt-2 max-w-[60ch] font-serif text-lead italic text-muted">{dict.playground.intro}</p>
+          <PosterPlayground
+            input={playgroundInput}
+            strings={dict.playground}
+            posterStrings={dict.poster}
+            ingredientNames={ingredientNames}
+          />
+        </section>
       </main>
     </>
   );

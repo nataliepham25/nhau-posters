@@ -1,8 +1,8 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { cocktailInputs } from "@/lib/poster/fixtures";
+import { cocktailInputs, withFlavor } from "@/lib/poster/fixtures";
 import { generatePoster } from "@/lib/poster/generate";
-import { Poster } from "./Poster";
+import { Poster, shapeKeys } from "./Poster";
 
 describe("Poster", () => {
   it.each(cocktailInputs.map((input) => [input.slug, input] as const))(
@@ -21,4 +21,24 @@ describe("Poster", () => {
       expect(renderToStaticMarkup(<Poster spec={generatePoster(input)} />)).not.toContain("feGaussianBlur");
     }
   });
+
+  it("adds motion only when live", () => {
+    const spec = generatePoster(cocktailInputs.find((input) => input.ingredients.some((i) => i.name === "CO₂"))!);
+    const still = renderToStaticMarkup(<Poster spec={spec} />);
+    const live = renderToStaticMarkup(<Poster spec={spec} live />);
+    expect(still).not.toMatch(/poster-(rise|sway|shift)/);
+    expect(live).toContain("poster-rise");
+  });
+
+  it("keys each shape by its ingredient, uniquely, so React can transition it", () => {
+    for (const input of cocktailInputs) {
+      for (const sweet of [0, 5, 10]) {
+        const shapes = generatePoster(withFlavor(input, { ...input.flavor, sweet })).shapes;
+        const keys = shapeKeys(shapes);
+        expect(new Set(keys).size).toBe(keys.length);
+        keys.forEach((key, index) => expect(key.startsWith(`${shapes[index].ingredientId ?? shapes[index].layer}-`)).toBe(true));
+      }
+    }
+  });
 });
+
